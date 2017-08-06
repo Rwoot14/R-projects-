@@ -1,0 +1,133 @@
+---
+title: "Predictive modeling exam Q6.09"
+author: "Reece Wooten"
+date: "7/24/2017"
+output: html_document
+---
+## Question 9 From Chapter 6
+```{r}
+set.seed(1)
+
+library(glmnet)
+library(ISLR)
+attach(College)
+library(Metrics)
+college=College
+```
+#### (a)
+##### Split the data set into a training set and a test set.
+```{r}
+set.seed(1)
+
+index     <- 1:nrow(college)
+testindex <- sample(index, trunc(length(index)/2))
+testset   <- college[testindex,]
+trainset  <- college[-testindex,]
+```
+#### (b)
+##### Fit a linear model using least squares on the training set, and report the test error obtained.
+```{r}
+set.seed(1)
+
+fit1=lm(Apps~.,data=trainset)
+pred_fit1=predict(fit1,testset)
+mean((pred_fit1-testset$Apps)^2)
+sqrt(mean((pred_fit1-testset$Apps)^2))
+```
+* The test MSE for the model is 1354497 and the test RMSE is 1163.829
+
+#### (c)
+##### Fit a ridge regression model on the training set, with lamdba chosen by cross-validation. Report the test error obtained.
+```{r}
+set.seed(1)
+
+library(leaps)
+x=model.matrix(Apps~.,college)[,-1] 
+y=college$Apps
+train=sample(1:nrow(x), nrow(x)/2)
+test=(-train)
+y.test=y[test]
+grid=10^seq(10,-2,length=100)
+ridge.mod=glmnet(x[train,],y[train],alpha=0,lambda=grid,thresh=1e-12)
+cv.ridge.mod=cv.glmnet(x[train,],y[train],alpha=0,lambda=grid,thresh=1e-12)
+ridge.pred=predict(ridge.mod ,s=4, newx=x[test,])
+mean((ridge.pred-y.test)^2)
+sqrt(mean((ridge.pred-y.test)^2))
+
+bestlam=cv.ridge.mod$lambda.min
+bestlam
+```
+* The test error MSE was 1103208 and a test RMSE of 1050.337, and the best lamba was .0132
+
+#### (d)
+##### Fit a lasso model on the training set, with lamdba chosen by cross- validation. Report the test error obtained, along with the num-ber of non-zero coefficient estimates.
+```{r}
+set.seed(1)
+
+
+lasso.mod=glmnet(x[train,],y[train],alpha=1,lambda=grid,thresh=1e-12)
+cv.lasso.mod=cv.glmnet(x[train,],y[train],alpha=0,lambda=grid,thresh=1e-12)
+
+lasso.pred=predict(lasso.mod ,s=4, newx=x[test,])
+mean((lasso.pred-y.test)^2)
+sqrt(mean((lasso.pred-y.test)^2))
+
+bestlam=cv.lasso.mod$lambda.min
+bestlam
+lasso.coef=predict(lasso.mod,type="coefficients",s=bestlam)
+lasso.coef
+```
+* The test error MSE was 1,09010 and a test RMSE of 1044.079 and the best lamba was .01, the number of non-zero coefficients estimates was 17 not including the intercept. 
+
+#### (e) 
+##### Fit a PCR model on the training set, with M chosen by cross- validation. Report the test error obtained, along with the value of M selected by cross-validation
+```{r}
+set.seed(1)
+
+library("pls")
+pcr.fit=pcr(Apps~., data=college, subset=train, scale=TRUE, validation ="CV")
+
+
+validationplot(pcr.fit,val.type="MSEP")
+summary(pcr.fit)
+
+
+pcr.pred=predict(pcr.fit,x[test,],ncomp=17)
+mean((pcr.pred-y.test)^2)
+sqrt(mean((pcr.pred-y.test)^2))
+
+```
+* The Test error was 1,108,531 and a test RMSE of 1052.868, and the value of M that minimized the cross validation error was using all of the variables M=17
+
+#### (f)
+##### Fit a PLS model on the training set, with M chosen by cross- validation. Report the test error obtained, along with the value of M selected by cross-validation.
+```{r}
+set.seed(1)
+
+
+pls.fit=plsr(Apps~.,data=college,subset=train,scale=TRUE,validation="CV")
+summary(pls.fit)
+
+pls.pred=predict(pls.fit,x[test,],ncomp=16) 
+mean((pls.pred-y.test)^2)
+sqrt(mean((pls.pred-y.test)^2))
+
+```
+* The test error was 1,108,502 and a test RMSE of 1052.854, and the value of M that minimized the cross validation error was the full model M=17
+
+#### (g) 
+##### Comment on the results obtained. How accurately can we pre- dict the number of college applications received? Is there much difference among the test errors resulting from these five ap- proaches?
+```{r}
+set.seed(1)
+
+sqrt(mean((pred_fit1-testset$Apps)^2))
+sqrt(mean((ridge.pred-y.test)^2))
+sqrt(mean((lasso.pred-y.test)^2))
+sqrt(mean((pcr.pred-y.test)^2))
+sqrt(mean((pls.pred-y.test)^2))
+summary(Apps)
+rm(list=ls())
+```
+* All the models predict with similar amounts of accuracy according to their respective test RMSE's. The only model that deviates from the other models is the linear regression using all of the predictors. The models do not do very well compared to the summary statistics above. The only universities that would be able to use this model would possible be the ones in fourth quartile. 
+
+

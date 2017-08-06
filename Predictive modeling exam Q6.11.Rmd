@@ -1,0 +1,125 @@
+---
+title: "Predictive modeling exam Q6.11"
+author: "Reece Wooten"
+date: "7/28/2017"
+output: html_document
+---
+
+```{r}
+set.seed(1)
+
+library(MASS)
+attach(Boston)
+library(glmnet)
+Boston=Boston
+```
+## Question 11 From Chapter 6
+#### (a) 
+##### Try out some of the regression methods explored in this chapter, such as best subset selection, the lasso, ridge regression, and PCR. Present and discuss results for the approaches that you consider.
+
+```{r echo=TRUE}
+
+set.seed(1)
+index     <- 1:nrow(Boston)
+testindex <- sample(index, trunc(length(index)/2))
+testset   <- Boston[testindex,]
+trainset  <- Boston[-testindex,]
+```
+
+```{r}
+
+set.seed(1)
+library(leaps)
+regfit.full=regsubsets(crim~.,Boston,nvmax = 13)
+summary(regfit.full)
+reg.summary=summary(regfit.full)
+reg.summary$rsq
+
+
+par(mfrow=c(2,2))
+plot(reg.summary$rss ,xlab="Number of Variables ",ylab="RSS",
+type="l")
+plot(reg.summary$adjr2 ,xlab="Number of Variables ",
+ylab="Adjusted RSq",type="l")
+which.max(reg.summary$adjr2)
+points(9,reg.summary$adjr2[9], col="red",cex=2,pch=20)
+
+fit1=lm(crim~zn+indus+nox+age+dis+rad+ptratio+black+lstat+medv,data=trainset)
+
+pred_fit1=predict(fit1,testset)
+mean((pred_fit1-testset$crim)^2)
+sqrt(mean((pred_fit1-testset$crim)^2))
+```
+
+* Using the best subset selection and determining that nine variables minimized the RSS. The test RMSE of those nine variables in a linear regression was 6.684.
+```{r}
+
+set.seed(1)
+library(leaps)
+x=model.matrix(crim~.,Boston)[,-1] 
+y=Boston$crim
+train=sample(1:nrow(x), nrow(x)/2)
+test=(-train)
+y.test=y[test]
+grid=10^seq(10,-2,length=100)
+ridge.mod=glmnet(x[train,],y[train],alpha=0,lambda=grid,thresh=1e-12)
+cv.ridge.mod=cv.glmnet(x[train,],y[train],alpha=0,lambda=grid,thresh=1e-12)
+ridge.pred=predict(ridge.mod ,s=4, newx=x[test,])
+mean((ridge.pred-y.test)^2)
+sqrt(mean((ridge.pred-y.test)^2))
+bestlam=cv.ridge.mod$lambda.min
+bestlam
+
+```
+* After trying a ridge regression with a best lambda of .497. The Test RMSE is 6.3 which is significantly better than using the best subset selection/linear regression. 
+```{r}
+set.seed(1)
+lasso.mod=glmnet(x[train,],y[train],alpha=1,lambda=grid)
+plot(lasso.mod)
+
+cv.lasso.mod=cv.glmnet(x[train,],y[train],alpha=1,lambda=grid)
+
+bestlam=cv.lasso.mod$lambda.min
+bestlam
+
+lasso.pred=predict(lasso.mod,s=bestlam,newx=x[test,])
+
+lasso.coef=predict(lasso.mod,type="coefficients",s=bestlam)[1:14,]
+lasso.coef
+
+lasso_lm_fit=lm(crim~zn+indus+chas+nox+rm+dis+rad+ptratio+black+lstat+medv ,data=trainset)
+
+lass_lm_pred=predict(lasso_lm_fit,data=testset)
+
+sqrt(mean((lass_lm_pred-y.test)^2))
+
+sqrt(mean((lasso.pred-y.test)^2))
+```
+* After trying a lasso regression with a best lambda of .093 , and seeing the coef. age and tax going to 0, the test RMSE of a linear model, using the lasso as parameter selection, was 6.04, and using the predict function within the lasso model gave a test RMSE of 6.19 which is fairly similar, but the linear model should be used. This model is better than the ridge regression.  
+
+```{r}
+set.seed(1)
+library("pls")
+pcr.fit=pcr(crim~., data=Boston, subset=train, scale=TRUE, validation ="CV")
+
+
+validationplot(pcr.fit,val.type="MSEP")
+summary(pcr.fit)
+
+
+pcr.pred=predict(pcr.fit,x[test,],ncomp=12)
+mean((pcr.pred-y.test)^2)
+sqrt(mean((pcr.pred-y.test)^2))
+rm(list=ls())
+detach(Boston)
+```
+* Using PCR, and using 12 Principle components resulted in a test RMSE of 6.27, which is on par with the ridge model but greater than the lasso parameter selection model. 
+
+#### (b) 
+##### Propose a model (or set of models) that seem to perform well on this data set, and justify your answer. Make sure that you are evaluating model performance using validation set error, cross- validation, or some other reasonable alternative, as opposed to using training error.
+* I propose to use the Lasso model as parameter selection and then a linear model for predicting crime rates in Boston suburbs. The Lasso provide the smallest test RMSE, therefore the model should have the strongest predictive power. 
+
+
+#### (c) 
+##### Does your chosen model involve all of the features in the data set? Why or why not?
+* The chosen model uses all the variables in the model expect for age and tax. The Lasso regression shrinks the predictor space by a value lambda which is chosen through cross validation, but only two of the predictors reach 0 so all predictors except for age and tax were used in linear model. 

@@ -1,0 +1,30 @@
+---
+title: "Predictive modeling exam P3"
+author: "Reece Wooten"
+date: "8/1/2017"
+output: html_document
+---
+
+
+## Problem 3 From the Exam
+#### 1. 
+##### Why can’t I just get data from a few different cities and run the regression of “Crime” on “Police” to understand how more cops in the streets affect crime? (“Crime” refers to some measure of crime rate and “Police” measures the number of cops in a city)
+* Most likely when cities have more crime they will increase the amount of cops accordingly, so there is already a positive relationship between crime and cops that is naturally observed in cities. So there needs to be a way to isolate the effects of an increase in cops on crime where the increase in cops isn't related to an increase in crime. 
+
+
+#### 2.
+##### How were the researchers from UPENN able to isolate this effect? Briefly describe their approach and discuss their result in the “Table 2” below.
+* The researchers needed to find data where a lot of police were added to a city that weren't related to that cities crime levels.The way they were able to do this was in DC the monitored the terrorism alert system, when the terror alert level goes to orange DC positions more cops in the city. This increase in cops is a perfect way to measure the effect of an increase in cops on crime, when the increase in cops is unrelated to the cities crime level. 
+* From Table 2, they found that when DC is on high alert and more cops are positioned in the city, on average and when holding midday ridership constant there is a 6.04 decrease in the number of daily crimes.
+
+#### 3. 
+##### Why did they have to control for METRO ridership? What was that trying to capture?
+* They needed to check rider levels to see if on high alert days less people were just in DC which might have decreased crime, which would have over emphasized the effect of an increase cops on crime levels. These variables are statistically significant at the 5% level.
+
+#### 4. 
+##### In the next page, I am showing you “Table 4” from the research paper. Just focus on the first column of the table. Can you describe the model being estimated here? What is the conclusion?
+* The model that is being estimated is the effect of more cops due to a high alert on different police districts within DC. On average and all else equal, when DC is under high alert, police district one has a 2.62 more decrease in daily crime than the base line police district. Also one average and all else equal when DC is under high alert, other police districts has a .571 more decrease in daily crime than the baseline district. 
+
+
+
+

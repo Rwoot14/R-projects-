@@ -1,0 +1,307 @@
+---
+title: "Predictive Modeling Exam"
+author: "Reece Wooten"
+date: "7/23/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+## Question 15 From Chapter 3
+#### (a)
+##### For each predictor, fit a simple linear regression model to predict the response. Describe your results. In which of the models is there a statistically significant association between the predictor and the response? Create some plots to back up your assertions.
+```{r}
+set.seed(1)
+
+library("MASS")
+attach(Boston)
+Boston=Boston
+fit1=lm(Boston$crim~Boston$zn)
+summary(fit1)
+plot(Boston$zn,crim)
+```
+
+* A one percentage point increase in the residential land zoned for lots over 25,000 ft will decrease crime by .074 percentage points per capita on average. This variable is statistically significant at the 5% level. 
+
+```{r}
+set.seed(1)
+
+Boston$zn2=zn^2
+Boston$zn3=zn^3
+Boston$indus2=indus^2
+Boston$indus3=indus^3
+Boston$chas2=chas^2
+Boston$chas3=chas^3
+Boston$nox2=nox^2
+Boston$nox3=nox^3
+Boston$rm2=rm^2
+Boston$rm3=rm^3
+Boston$age2=age^2
+Boston$age3=age^3
+Boston$dis2=dis^2
+Boston$dis3=dis^3
+Boston$rad2=rad^2
+Boston$rad3=rad^3
+Boston$tax2=tax^2
+Boston$tax3=tax^3
+Boston$ptratio2=ptratio^2
+Boston$ptratio3=ptratio^3
+Boston$black2=black^2
+Boston$black3=black^3
+Boston$lstat2=lstat^2
+Boston$lstat3=lstat^3
+Boston$medv2=medv^2
+Boston$medv3=medv^3
+```
+```{r}
+set.seed(1)
+
+fit2=lm(crim~indus)
+summary(fit2)
+plot(Boston$indus,crim)
+```
+
+* A one percentage point increase in non-retail business acres per town will decrease crime by 2.06 percentage points on average. This variable is statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit3=lm(crim~Boston$chas)
+summary(fit3)
+plot(Boston$chas,crim)
+```
+
+* Suburbs that bound the Charles River will have a 1.89 percentage point less crime rate than the ones that don't on average. This variable is not statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit4=lm(crim~Boston$nox)
+summary(fit4)
+plot(Boston$nox,crim)
+```
+
+* A one unit increase in the nitrogen oxide concentration in a suburb will increase the crime rate by 31.249 on average. This variable is statistically significant at the 5% level.
+```{r}
+set.seed(1)
+
+fit5=lm(crim~Boston$rm)
+summary(fit5)
+plot(Boston$rm,crim)
+```
+
+* A one room increase in the average number of rooms per dwelling will decrease the crime rate by 2.684% on average. This variable is statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit6=lm(crim~Boston$age)
+summary(fit6)
+plot(Boston$age,crim)
+```
+
+* A one percentage point increase in the proportion of owner occupied units built prior to 1940 will increase the crime rate by .1078 percentage points on average. This variable is statistically significant at the 5% level 
+```{r}
+set.seed(1)
+
+fit7=lm(crim~Boston$dis)
+summary(fit7)
+plot(Boston$dis,crim)
+```
+
+* A one unit increase in the weighted mean of distances to five Boston employment centers will decrease the crime rate by 1.55% on average. This variable is statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit8=lm(crim~Boston$rad)
+summary(fit8)
+plot(Boston$rad,crim)
+```
+
+* A one unit increase in the index of accessibility to radial highways will increase the crime rate by .618% on average. This variable is statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit9=lm(crim~Boston$tax)
+summary(fit9)
+plot(Boston$tax,crim)
+```
+
+* A one percentage point increase in the full-value property-tax rate will increase crime by .0297 percentage points on average. This value is statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit10=lm(crim~Boston$ptratio)
+summary(fit10)
+plot(Boston$ptratio,crim)
+```
+
+* A one percentage point increase in the pupil-teacher ratio will increase the crime rate by 1.15 percentage points on average. This variable is statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fit11=lm(crim~Boston$black)
+summary(fit11)
+plot(Boston$black,crim)
+```
+
+* A one percentage point increase in the black proportion in the suburbs will decrease the crime rate by .0362 percentage points on average. This variable is statistically significant at the 5% level
+```{r}
+set.seed(1)
+
+fit12=lm(crim~Boston$lstat)
+summary(fit12)
+plot(Boston$lstat,crim)
+```
+
+* A one percentage point increase in the percent of lower status population will increase crime by .548 percentage points on average. This variable is statistically significant at the 5% level.
+```{r}
+set.seed(1)
+
+fit13=lm(crim~Boston$medv)
+summary(fit13)
+plot(Boston$medv,crim)
+```
+
+* A 1000 dollar increase in the median value of owner occupied homes will decrease the crime rate by .363% on average. This variable is statistically significant at the 5% level. 
+
+#### (b)
+##### Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis H0 : Bj = 0?
+```{r}
+set.seed(1)
+
+fit14=lm(crim~Boston$zn+Boston$indus+Boston$chas+Boston$nox+Boston$rm+Boston$age+Boston$dis+Boston$rad+Boston$tax+Boston$ptratio+Boston$black+Boston$lstat+Boston$medv)
+summary(fit14)
+```
+* zn, dis, rad, black, and medv, are all statistically significant at the 5% level, therefore they reject the null hypothesis that the true values of those coefficients are 0. The interpretation for the significant variables are: 
+
+* A one percentage point increase in the proportion of residential land zoned for lots over 25,000 sq.ft increase the crime rate by .045 percentage points on average and all else equal. 
+
+* A one unit increase in the weighted mean of distances to five Boston employment centers decrease the crime rate by .987% on average and all else equal
+
+* A one unit increase in the index of accessibility to radial highways increase the crime rate by .588%
+
+* A one percentage point increase in the proportion of the black population decreases crime by .007 percentage points
+
+* A one unit increase in the median value of owner occupied homes will decrease crime by 19.8%
+
+#### (c)
+##### How do your results from (a) compare to your results from (b)? Create a plot displaying the univariate regression coefficients from (a) on the x-axis, and the multiple regression coefficients from (b) on the y-axis. That is, each predictor is displayed as a single point in the plot. Its coefficient in a simple linear regres- sion model is shown on the x-axis, and its coefficient estimate in the multiple linear regression model is shown on the y-axis.
+```{r}
+set.seed(1)
+
+par(mfrow=c(1,1))
+plot(1, type="n", xlab="Univariate Regression Coef.", ylab="Multiple Regression Coef.", xlim=c(-3, 32), ylim=c(-11, 2))
+points(summary(fit1)$coef[2],summary(fit14)$coef[2])
+points(summary(fit2)$coef[2],summary(fit14)$coef[3])
+points(summary(fit3)$coef[2],summary(fit14)$coef[4])
+points(summary(fit4)$coef[2],summary(fit14)$coef[5])
+points(summary(fit5)$coef[2],summary(fit14)$coef[6])
+points(summary(fit6)$coef[2],summary(fit14)$coef[7])
+points(summary(fit7)$coef[2],summary(fit14)$coef[8])
+points(summary(fit8)$coef[2],summary(fit14)$coef[9])
+points(summary(fit9)$coef[2],summary(fit14)$coef[10])
+points(summary(fit10)$coef[2],summary(fit14)$coef[11])
+points(summary(fit11)$coef[2],summary(fit14)$coef[12])
+points(summary(fit12)$coef[2],summary(fit14)$coef[13])
+points(summary(fit13)$coef[2],summary(fit14)$coef[14])
+```
+
+* Most of the coef. stayed relatively the same between the multivariate model and the univariate  models, however most of the coef. in the multivariate model are not statistically significant from 0 and reside in the coef. range of -2,2 while it appears the coef. range in the univariate models were between -3,3. There is one outlier where the variable nox had a very large univariate coef., but in the multivariate model, was decreased 3 fold. The multivariate model should be used over the univariate models because it allows for controls in the crime rate. 
+
+#### (d)
+##### Is there evidence of non-linear association between any of the predictors and the response? To answer this question, for each predictor X, fit a model of the form.
+```{r}
+set.seed(1)
+
+fitzn=lm(Boston$crim~Boston$zn+(Boston$zn2)+(Boston$zn3))
+summary(fitzn)
+```
+* There is no evidence of a non-linear factor at the 5% significance level for the variable zn.
+```{r}
+set.seed(1)
+
+fitindus=lm(Boston$crim~Boston$indus+(Boston$indus2)+(Boston$indus3))
+summary(fitindus)
+```
+* There is evidence of a non-linear factor at the 5% significance level at both the squared and cubed transformations. 
+```{r}
+set.seed(1)
+
+fitchas=lm(Boston$crim~Boston$chas+(Boston$chas2)+(Boston$chas3))
+summary(fitchas)
+```
+* Dummy variables do not have non-linear factors alone. 
+```{r}
+set.seed(1)
+
+fitnox=lm(Boston$crim~Boston$nox+(Boston$nox2)+(Boston$nox3))
+summary(fitnox)
+```
+* There is evidence of a non-linear factor at the 5% significance level at both the squared and cubed transformations
+```{r}
+set.seed(1)
+
+fitrm=lm(Boston$crim~Boston$rm+(Boston$rm2)+(Boston$rm3))
+summary(fitrm)
+```
+* There is no evidence of a non-linear factor at the 5% significance level.
+```{r}
+set.seed(1)
+
+fitage=lm(Boston$crim~Boston$age+(Boston$age2)+(Boston$age3))
+summary(fitage)
+```
+* There is evidence of a non-linear factor at the 5% significance level at both the squared and cubed transformations, but interestingly the non-transformed variable lost its statistical significance. 
+```{r}
+set.seed(1)
+
+fitdis=lm(Boston$crim~Boston$dis+(Boston$dis2)+(Boston$dis3))
+summary(fitdis)
+```
+* There is evidence of a non-linear factor at the 5% level at both the squared and cubed transformations.
+```{r}
+set.seed(1)
+
+fitrad=lm(Boston$crim~Boston$rad+(Boston$rad2)+(Boston$rad3))
+summary(fitrad)
+```
+* There is no evidence of a non-linear factor at the 5% level, nor is the original variable statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fittax=lm(Boston$crim~Boston$tax+(Boston$tax2)+(Boston$tax3))
+summary(fittax)
+```
+* There is no evidence of a non-linear factor at the 5% level, nor is the original variable statistically significant at the 5% level. 
+```{r}
+set.seed(1)
+
+fitpt=lm(Boston$crim~Boston$ptratio+(Boston$ptratio2)+(Boston$ptratio3))
+summary(fitpt)
+```
+* There is evidence of a non-linear factor at the 5% level for both the squared and cube terms. 
+```{r}
+set.seed(1)
+
+fitblack=lm(Boston$crim~Boston$black+(Boston$black2)+(Boston$black3))
+summary(fitblack)
+```
+* There is no evidence that there is a non-linear factor at the 5% level, nor is the original variable statistically significant. 
+```{r}
+set.seed(1)
+
+fitls=lm(Boston$crim~Boston$lstat+(Boston$lstat2)+(Boston$lstat3))
+summary(fitls)
+```
+* There is no evidence of a non-linear factor at the 5% level for both the squared and cubed terms, nor is the original variable statistically significant. 
+```{r}
+set.seed(1)
+
+fitme=lm(Boston$crim~Boston$medv+(Boston$medv2)+(Boston$medv3))
+summary(fitme)
+remove(Boston)
+rm(list=ls())
+```
+* There is evidence of a non-linear factor for both the cubed and squared terms at the 5% significance level. 
+
+

@@ -1,0 +1,120 @@
+---
+title: "Predictive modeling exam Q8.08"
+author: "Reece Wooten"
+date: "7/29/2017"
+output: html_document
+---
+
+```{r}
+library(tree)
+library(ISLR)
+attach(Carseats)
+library(randomForest)
+Carseats=Carseats
+set.seed(1)
+```
+## Question 8 From Chapter 8
+#### (a) 
+##### Split the data set into a training set and a test set.
+
+```{r}
+set.seed(1)
+train = sample(1:nrow(Carseats), nrow(Carseats)/2)
+test=Carseats[-train ,"Sales"]
+
+```
+#### (b) 
+##### Fit a regression tree to the training set. Plot the tree, and inter- pret the results. What test error rate do you obtain?
+
+```{r}
+set.seed(1)
+tree.Carseats=tree(Sales~.,Carseats ,subset=train)
+summary(tree.Carseats)
+
+plot(tree.Carseats)
+text(tree.Carseats ,pretty=0)
+
+yhat=predict(tree.Carseats ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+
+```
+* The mean squared error test rate is 4.148, and the RMSE is 2.036, which is fairly decent. The variable with the most information for sales is shelvloc: bad/medium which is shown from the plot of the tree.  
+
+#### (c) 
+##### Use cross-validation in order to determine the optimal level of tree complexity. Does pruning the tree improve the test error rate?
+
+```{r}
+set.seed(1)
+
+cv.Carseats=cv.tree(tree.Carseats,FUN=prune.tree )
+plot(cv.Carseats$size ,cv.Carseats$dev ,type='b')
+
+prune.Carseats=prune.tree(tree.Carseats ,best=8)
+plot(prune.Carseats)
+text(prune.Carseats ,pretty=0)
+
+yhat=predict(prune.Carseats ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+```
+* The test RMSE is 2.256, which actually increases marginally, but the tree is much more interpret-able with only 8 terminal nodes. 
+
+#### (d) 
+##### Use the bagging approach in order to analyze this data. What test error rate do you obtain? Use the importance() function to determine which variables are most important.
+```{r}
+set.seed(1)
+
+bag.car=randomForest(Sales~.,data=Carseats,subset=train,mtry=10,importance =TRUE)
+bag.car
+
+yhat=predict(bag.car ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+
+importance(bag.car)
+
+
+```
+* The test RMSE is 1.59 which is substantially better than the previous tree models. The top 3 most important variables are shelveloc, price, and age.
+
+#### (e) 
+##### Use random forests to analyze this data. What test error rate do you obtain? Use the importance() function to determine which variables are most important. Describe the effect of m, the num- ber of variables considered at each split, on the error rate obtained.
+```{r}
+set.seed(1)
+
+bag.car=randomForest(Sales~.,data=Carseats,subset=train,mtry=3,importance =TRUE)
+bag.car
+
+yhat=predict(bag.car ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+
+
+bag.car=randomForest(Sales~.,data=Carseats,subset=train,mtry=5,importance =TRUE)
+bag.car
+
+yhat=predict(bag.car ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+
+
+bag.car=randomForest(Sales~.,data=Carseats,subset=train,mtry=7,importance =TRUE)
+bag.car
+
+yhat=predict(bag.car ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+
+bag.car=randomForest(Sales~.,data=Carseats,subset=train,mtry=9,importance =TRUE)
+bag.car
+
+yhat=predict(bag.car ,newdata=Carseats[-train ,])
+mean((yhat-test)^2)
+sqrt(mean((yhat-test)^2))
+
+importance(bag.car)
+detach(Carseats)
+rm(list=ls())
+```
+* As the number of variables in the random forest model increases(mtry) at each split, the lower the test RMSE gets, which indicates that this data needs more complex trees for predictive power. The Random forest is marginally better than the bagging model in the previous question which used all 10 variables. The variables which were most important were shelveloc, price, and age which were the same variables in the previous bagging problem. 

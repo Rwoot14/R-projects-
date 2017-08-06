@@ -1,0 +1,78 @@
+---
+title: "Predictive modeling exam Q8.11"
+author: "Reece Wooten"
+date: "7/29/2017"
+output: html_document
+---
+
+```{r}
+library(ISLR)
+Caravan=Caravan
+Caravan$Purchase <- ifelse(Caravan$Purchase == "Yes", 1, 0)
+library(gbm)
+attach(Caravan)
+set.seed(1)
+
+```
+## Question 11 From Chapter 8
+#### (a) 
+##### Create a training set consisting of the first 1,000 observations,and a test set consisting of the remaining observations.
+```{r}
+set.seed(1)
+
+train = sample(1:nrow(Caravan), 1000)
+train.set=Caravan[train,]
+test=Caravan[-train, ]
+
+
+```
+#### (b) 
+##### Fit a boosting model to the training set with Purchase as the response and the other variables as predictors. Use 1,000 trees, and a shrinkage value of 0.01. Which predictors appear to be the most important?
+
+```{r}
+set.seed(1)
+
+boost.caravan=gbm(Purchase~.,n.trees=1000,distribution="gaussian",data=train.set,shrinkage = .01)
+
+summary(boost.caravan)
+```
+* The top 3 most important variables are MOSTYPE,APERSAUT, and PPERSAUT 
+
+#### (c) 
+##### Use the boosting model to predict the response on the test data. Predict that a person will make a purchase if the estimated prob-ability of purchase is greater than 20 %. Form a confusion ma-trix. What fraction of the people predicted to make a purchase do in fact make one? How does this compare with the results obtained from applying KNN or logistic regression to this data set?
+```{r}
+set.seed(1)
+
+yhat.boost=predict(boost.caravan,newdata=test, n.trees=1000)
+
+
+glm.pred=rep("No",4822)
+glm.pred[yhat.boost >.2]="Yes"
+
+```
+```{r}
+glm_table=table(test$Purchase,glm.pred)
+glm_table
+a=glm_table[4]/(glm_table[4]+glm_table[3])
+a
+```
+* a is the percent of people who are predicted to make a purchase using a boosting model who do in fact make one. 
+```{r}
+set.seed(1)
+
+library(class)
+train.Direction =Purchase[train]
+knn.pred=knn(train.set,test,train.Direction ,k=3)
+
+knn_table=table(test$Purchase,knn.pred)
+knn_table
+b=knn_table[4]/(knn_table[4]+knn_table[3])
+b
+detach(Caravan)
+rm(list=ls())
+```
+* b is the percent of people who are predicted to make a purchase using a knn model who do in fact make one. 
+
+* Boosting consistently makes better predictions than the KNN model. 
+
+

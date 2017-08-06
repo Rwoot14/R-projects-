@@ -1,0 +1,201 @@
+---
+title: "Predictive Modeling Exam"
+author: "Reece Wooten"
+date: "7/23/2017"
+output: html_document
+---
+
+
+
+## Question 10 From Chapter 2 
+#### (a)
+##### How many rows are in this data set? How many columns? What do the rows and columns represent?
+```{r}
+set.seed(1)
+
+library(MASS)
+x=Boston
+?Boston
+cat("The Number of Rows",nrow(x))
+cat("The Number of Columns",ncol(x))
+```
+
+* The Rows of the Boston data set are neighborhoods/suburbs in the Boston area. 
+* The Columns of the data set are the various attributes of those suburbs, crime rate, demographic factors, etc... 
+
+
+
+#### (b)
+##### Make some pairwise scatterplots of the predictors (columns) in this data set. Describe your findings.
+```{r}
+set.seed(1)
+
+pairs(x[, ], gap = 0, pch = ".")
+```
+
+* The pair wise plots above show a positive relationship between crime rate nitrogen oxide concentration, age of the suburbs, and percent of lower status people in the population. There also seems to be a negative relationship between crime rate and the weighted mean of distances to five Boston employment centers and the median value of owner occupied homes. 
+
+* nitrogen oxide content appears to have a positive relationship with the age of the neighborhood and a negative relationship between the weighted mean of distances to five Boston employment centers. 
+
+* rm appears to have a positive relationship with median value of owner occupied homes and a negative relationship with the percent of lower status people in the population. 
+
+* age appears to have a negative relationship with the mean distance to five Boston employment centers, and a positive relationship with the percent of lower status people in the population. 
+
+* The percent of lower status people in the population appears to have a negative relationship with the median value of owner occupied homes. 
+
+#### (c)
+##### Are any of the predictors associated with per capita crime rate? If so, explain the relationship.
+
+* The pair wise plots above show a positive relationship between crime rate and nitrogen oxide concentration, age of the suburbs, and percent of lower status people in the population. There also seems to be a negative relationship between crime rate and the weighted mean of distances to five Boston employment centers and the median value of owner occupied homes. There could also be a relationship between crime rate and rooms, but it is not clear from the pairwise graph if its positive or negative. 
+
+#### (d)
+##### Do any of the suburbs of Boston appear to have particularly high crime rates? Tax rates? Pupil-teacher ratios? Comment on the range of each predictor.
+```{r}
+set.seed(1)
+
+hist(x$crim,breaks=100)
+cat('Range of Crime Rate:',range(x$crim))
+summary(x$crim)
+```
+* There does seem to be a number of suburbs that have a per capita crime rate above 20%, up to the 3rd quartile being below 3.67, but a max of 88.98.
+```{r}
+hist(x$tax,breaks=100)
+cat('Range of Tax Breaks:',range(x$tax))
+summary(x$tax)
+```
+* Half of the full value property tax rates per $10,000 fall of the suburbs fall below 330. while some reach a max of 711 which is significantly higher than the median. 
+```{r}
+hist(x$ptratio,breaks=100)
+cat('Range of Pupil-Teacher Ratio:',range(x$ptratio))
+summary(x$ptratio)
+```
+* The median pupil to teacher ratio in the Boston suburbs is 19.05, with a max of 22, and a min of 12.60. This variable does not have as extreme of a range as the other two variables mentioned. 
+
+#### (e)
+##### How many of the suburbs in this data set bound the Charles river?
+```{r}
+set.seed(1)
+
+cat("Suburbs That Bound the Charles River Table:",table(x$chas))
+```
+* The number of suburbs that bound the Charles River is 35
+
+#### (f)
+##### What is the median pupil-teacher ratio among the towns in this data set?
+```{r}
+set.seed(1)
+
+summary(x$ptratio)
+```
+* The Median Pupil to Teacher Ratio among the towns is 19.05
+
+#### (g)
+##### Which suburb of Boston has lowest median value of owner-occupied homes? What are the values of the other predictors for that suburb, and how do those values compare to the overall ranges for those predictors? Comment on your findings.
+```{r}
+set.seed(1)
+
+which(x$medv==5)
+which(x$medv<5)
+```
+* There are two suburbs that share the lowest median value of owner-occupied homes which are suburbs 399 and 406. 
+```{r}
+set.seed(1)
+
+print('Suburb 309:')
+x[399,]
+print('Suburb 406:')
+x[406,]
+```
+* The output above shows the values of the other predictors for suburbs 399 and 406. 
+```{r}
+set.seed(1)
+
+cat('crim Range',range(x$crim))
+```
+* Both Suburbs have relatively high crime rates compared to the range, especially suburb 406. This is likely due to the neighborhood being extremely impoverished. 
+```{r}
+set.seed(1)
+
+cat('zn Range:',range(x$zn))
+```
+* Both Suburbs have the minimum amount of residential land zoned lots over 25,000 sq.fit. This is likely related to the median value of owner occupied homes being low. large residential land zoned lots are more likely in richer neighborhoods. 
+```{r}
+set.seed(1)
+
+cat('indus Range:',range(x$indus))
+```
+* Both Suburbs have the same amount of non-retail business acres per town, from the range it seems they are in the middle of the range. It seems as though having low median value of owner occupied homes does not depend on how much non-retail business acres are allotted in the town. 
+```{r}
+set.seed(1)
+
+cat('chas Range:',range(x$chas))
+```
+* Both suburbs aren't bounding the Charles River.
+```{r}
+set.seed(1)
+
+cat('nox range:',range(x$nox))
+```
+* The nitrogen oxide concentration for both suburbs are the same and is slightly higher than the minimum.
+```{r}
+set.seed(1)
+
+cat('rm Range:',range(x$rm))
+```
+* Both suburbs have the same average number of rooms per dwelling, and is in the middle of the range. 
+```{r}
+set.seed(1)
+
+cat('age Range:',range(x$age))
+```
+* The age of the suburbs dwellings are the same and all the dwellings are built prior to 1940. This indicated the neighborhoods are aging and have not been developed in a while, potentially discouraging business owners to build businesses in the area. 
+```{r}
+set.seed(1)
+
+cat('dis Range:',range(x$dis))
+```
+* Both suburbs have the same weighted mean of distances to five Boston employment centers and they are both close to the minimum of the range. This indicates an attempt to put employment centers close to the poor neighborhoods in the Boston area to find people jobs.
+```{r}
+set.seed(1)
+
+cat('rad Range:',range(x$rad))
+```
+* Both suburbs have the same amount of accessibility to radial highways which is at the max of the range. 
+```{r}
+set.seed(1)
+
+cat('tax Range:',range(x$tax))
+```
+* Both suburbs have the same property tax rate, which is relatively high in the range. 
+```{r}
+set.seed(1)
+
+cat('ptratio Range:',range(x$ptratio))
+```
+* Both suburbs have the same pupil teacher ratio and is relatively high in the range, a high pupil-teacher ratio indicated poor management/funding in the school districts which typically perpetuates poor neighborhoods. 
+```{r}
+set.seed(1)
+
+cat('black Range:',range(x$black))
+```
+* Suburb 399 has the max black proportion, and suburb 406 also has a relatively high black proportion compared to the range. This could indicate that black citizens are being displaced, or disadvantaged in the Boston surrounding area. 
+```{r}
+set.seed(1)
+
+cat('lstat Range:',range(x$lstat))
+```
+* Both Suburbs have relatively high lower status population compared to the range. This is in line with the median value of owner occupied homes being low also. 
+
+#### (h)
+##### In this data set, how many of the suburbs average more than seven rooms per dwelling? More than eight rooms per dwelling? Comment on the suburbs that average more than eight rooms per dwelling.
+```{r}
+set.seed(1)
+
+table(x$rm>7)
+table(x$rm>8)
+
+rm(list=ls())
+```
+* The number of suburbs that average more than 7 rooms per dwelling is 64, and the number of suburbs that average more than 8 rooms per dwelling is 13. 
+
+* All the suburbs with an average of 8 or more rooms have crime rates below 1, The majority of the suburbs have a median value of owner occupied homes above 40, and the majority of the suburbs have a lower status percent of their population below 5. These attributes seem to indicate that these suburbs are of the more affluent in the Boston area. 

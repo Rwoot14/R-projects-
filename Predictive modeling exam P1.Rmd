@@ -1,0 +1,31 @@
+---
+title: "Predictive modeling exam P1"
+author: "Reece Wooten"
+date: "7/29/2017"
+output: html_document
+---
+
+```{r}
+data=read.csv("BeautyData.csv")
+attach(data)
+set.seed(1)
+
+```
+## Problem 1 From the Exam
+#### 1. 
+##### Using the data, estimate the effect of “beauty” into course ratings. Make sure to think about the potential many “other determinants”. Describe your analysis and your conclusions.
+
+```{r}
+set.seed(1)
+
+lm.fit3=lm(CourseEvals~.,data=data)
+summary(lm.fit3)
+detach(data)
+rm(list=ls())
+```
+* The model above includes course evals being the response variable, beauty score, a dummy variable for gender, a dummy variable for course level, a dummy variable for english speaking, and a dummy variable for tenured tracked professors as predictors. A one unit increase in the beauty score of a professor on average and all else equal is associated with a .304 unit increase in course evaluations. This variable is statistically significant at the 5% level. This finding indicates that more attractive professors receive better course evaluations. There are a host of other predictors that would make this model more robust in its controls. To name a few: raters college, professors course college, ethnicity of rater and professor, etc... These other determinants would provide more controls for the model which would isolate the causal relationship between beauty score and course evaluations. 
+
+#### 2. 
+##### In his paper, Dr. Hamermesh has the following sentence: “Disentangling whether this outcome represents productivity or discrimination is, as with the issue generally, probably impossible”. Using the concepts we have talked about so far, what does he mean by that?
+* In reference to Dr. Hamermesh's paper, he is referring to disentangling the effect that the effect of being attractive has a larger effect on male professors, than female professors. The reason why Dr. Hamermesh says its probably impossible to isolate if this result is due to productivity or discrimination is because there are too many endogenous factors within the study he ran to know for sure if the effect is discrimination or productivity. There could be key unobserved variables within the determinate that determine course evaluations that aren't observed in this study. There would be a randomized experiment in which the same course was taught to the same students at the same time of day, and the two professors had the same beauty level, and the only difference between the two experiments were that one professor was male and one was female. This is a near impossible experiment, which could be reduced to an instrumental variable if there was one. For Dr. Hamermesh's paper, and his model, to isolate productivity or discrimination was statistically impossible. 
+
