@@ -30,29 +30,29 @@ observe how delay patterns changed over the year.
                         cat("\n\n\n\n\n")
                         }
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-1.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-2.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-2.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-3.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-3.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-4.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-4.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-5.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-5.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-6.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-6.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-7.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-7.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-8.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-8.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-9.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-9.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-10.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-10.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-11.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-11.png)
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-3-12.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-3-12.png)
 
 White cells represent no flights relevant to that particular cell.
 
@@ -167,7 +167,7 @@ Plot variance for each number of Principle Components:
     bestComponents = 150
     abline(v = bestComponents ,lw = 2,col = "red")
 
-![](Final_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+![](Final_files2/figure-markdown_strict/unnamed-chunk-12-1.png)
 
 ### Finishing up Latent Semantic Analysis
 
